@@ -1,0 +1,277 @@
+
+#
+#
+#
+
+library(shiny)
+
+# Define UI for application that draws a histogram
+shinyUI(
+  navbarPage("OptionSystem",
+
+             tabPanel("Board",
+                      fluidPage(
+                        fluidRow(
+                          column(3,
+                                 wellPanel(
+
+                                   fluidRow(
+                                      column(6,
+                                   selectInput("FutCo", label =  h6(strong("Futures code ")), c("SiH6-17", "SiH-9-17", "SiH-12.17"))),
+                                      column(6,
+                                   dateInput("OptionsExpire", label = h6(strong("Date Input")), value = "2017-05-22"))
+                                    ),
+
+                                    h6(strong("Volatility Smiles")),
+
+                                   fluidRow(
+                                      column(3,
+                                    h6(strong("Plot")),
+                                    checkboxInput("SVSmile", label = "SVSmile", value = TRUE)),
+                                      column(3,
+                                    textInput("SVSigma", label = h6(strong("Sigma")), value = "15")),
+                                      column(3,
+                                    textInput("SVSkew", label =  h6(strong("Skew")), value = "0.8")),
+                                      column(3,
+                                    textInput("SVKurt", label = h6(strong("Skew")), value = "0.6"))
+                                    ),
+
+                                   fluidRow(
+                                     column(3,
+                                    checkboxInput("RVSmile", label = "RVSmile", value = TRUE)),
+                                     column(3,
+                                            textInput("RVSigma", label = h6(strong("")), value = "15")),
+                                     column(3,
+                                            textInput("RVSkew", label =  h6(strong("")), value = "0.8")),
+                                     column(3,
+                                            textInput("RVKurt", label = h6(strong("")), value = "0.6"))
+                                   ),
+
+                                   fluidRow(
+                                     column(3,
+                                            checkboxInput("MVSmile", label = "MVSmile", value = TRUE)),
+                                     column(3,
+                                            textInput("MVSigma", label = h6(strong("")), value = "15")),
+                                     column(3,
+                                            textInput("MVSkew", label =  h6(strong("")), value = "0.8")),
+                                     column(3,
+                                            textInput("MVKurt", label = h6(strong("")), value = "0.6"))
+                                   ),
+
+                                   h6(strong("Greeks of Options")),
+
+                                   fluidRow(
+                                     column(2,
+                                            checkboxInput("MOEX", label = "MOEX", value = TRUE)),
+                                     column(3,
+                                            checkboxInput("StochVol", label = "StochVol", value = TRUE)),
+                                     column(3,
+                                            checkboxInput("VannaVolga", label = "VannaVolga", value = TRUE)),
+                                     column(4,
+                                            checkboxInput("Risk-Neutrals", label = "Risk-Neutrals", value = TRUE))
+                                   ),
+
+                                   h6(strong("Vanna volga method")),
+
+                                   fluidRow(
+                                     column(2,
+                                            checkboxInput("25DVV", label = "25D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("20DVV", label = "20D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("15DVV", label = "15D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("10DVV", label = "10D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("5DVV", label = "5D", value = TRUE))
+                                   ),
+
+                                   fluidRow(
+                                     column(3,
+                                            checkboxInput("VVModel", label = "VVModel", value = TRUE)),
+                                     column(3,
+                                            textInput("ATM", label = h6(strong("ATM")), value = "15")),
+                                     column(3,
+                                            textInput("RR", label =  h6(strong("RR")), value = "0.8")),
+                                     column(3,
+                                            textInput("BF", label = h6(strong("BF")), value = "0.6"))
+                                   ),
+
+                                   h6(strong("Risk Management")),
+
+                                   fluidRow(
+                                     column(3,
+                                            textInput("TargetVol", label = h6(strong("Target")), value = "15")),
+                                     column(3,
+                                            textInput("IVNow", label =  h6(strong("IV Now")), value = "0.8")),
+                                     column(3,
+                                            textInput("RiskFactor", label = h6(strong("Risk Factor")), value = "0.6")),
+                                     column(3,
+                                            textInput("RiskTarget", label = h6(strong("Risk Target")), value = "0.6"))
+                                   ),
+
+                                   h6(strong("Graphics options")),
+
+                                   fluidRow(
+                                     column(4,
+                                            textInput("StrikeLow", label = h6(strong("Strike Low")), value = "50000")),
+                                     column(4,
+                                            textInput("StrikeHigh", label =  h6(strong("Strike High")), value = "90000")),
+                                     column(4,
+                                            textInput("DeltaLimit", label = h6(strong("Delta Limit")), value = "15"))
+                                   ),
+
+                                   fluidRow(
+                                     column(4,
+                                            textInput("VolLow", label = h6(strong("Vol Low")), value = "10")),
+                                     column(4,
+                                            textInput("VolHigh", label =  h6(strong("Vol High")), value = "50")),
+                                     column(4,
+                                            textInput("VolAuto", label = h6(strong("Vol Auto")), value = "2"))
+                                   ),
+
+                                    sliderInput("Bins", label = h6(strong("Number of bins ")), min = 1, max = 50, value = 30)
+                                 )
+                                ),
+                          column(9,
+                                fluidRow(
+                                mainPanel( plotOutput("distPlot"))),
+                                fluidRow(
+                                  wellPanel(
+
+                                h6(strong("Trade Information"),
+                                   fluidRow(
+                                     column(1,
+                                            textInput("Strike", label = h6(strong("Strike")), value = "57000")),
+                                     column(1,
+                                            textInput("Vol", label =  h6(strong("Vol")), value = "18")),
+                                     column(1,
+                                            textInput("Type", label =  h6(strong("Type")), value = "Call")),
+                                     column(1,
+                                            textInput("OptionPrice", label = h6(strong("OptionPrice")), value = "450")),
+                                     column(1,
+                                              textInput("Delta", label = h6(strong("Strike")), value = "0.52")),
+                                     column(1,
+                                              textInput("Vega", label =  h6(strong("Vega")), value = "49")),
+                                     column(1,
+                                              textInput("Theta", label =  h6(strong("Theta")), value = "-87.19")),
+                                     column(1,
+                                              textInput("Gamma", label = h6(strong("Gamma")), value = "0.102"))
+                                   )
+
+                                   )))
+
+                        )
+                      )
+                    )),
+             tabPanel("Volatility",
+                      fluidPage(
+                        fluidRow(
+                          column(3,
+                                 wellPanel(
+
+                                   fluidRow(
+                                     column(6,
+                                            selectInput("FutCo", label =  h6(strong("Futures code ")), c("SiH6-17", "SiH-9-17", "SiH-12.17"))),
+                                     column(6,
+                                            dateInput("OptionsExpire", label = h6(strong("Date Input")), value = "2017-05-22"))
+                                   ),
+                                   h6(strong("Historical Volatility")),
+
+                                   fluidRow(
+                                     column(6,
+                                            checkboxInput("CloseToClose", label = "Close to Close", value = TRUE)),
+                                     column(6,
+                                            checkboxInput("YangShang", label = "Yang Shang", value = TRUE))
+                                   ),
+
+                                   fluidRow(
+                                     column(2,
+                                            checkboxInput("30DHV", label = "30D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("10DHV", label = "10D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("5DHV", label = "5D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("1DHV", label = "1D", value = TRUE))
+                                   ),
+                                   h6(strong("Implied Volatility")),
+
+                                   fluidRow(
+                                     column(6,
+                                            checkboxInput("BSModelIV", label = "Black Scholes Model", value = TRUE)),
+                                     column(6,
+                                            checkboxInput("HBIV", label = "Heson Bates Model", value = TRUE))
+                                   ),
+
+                                   fluidRow(
+                                     column(2,
+                                            checkboxInput("30DIV", label = "30D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("10DIV", label = "10D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("5DIV", label = "5D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("1DIV", label = "1D", value = TRUE))
+                                   ),
+
+                                   h6(strong("Future Volatility")),
+
+                                   fluidRow(
+                                     column(6,
+                                            checkboxInput("GarchIV", label = "EGarCH IV", value = TRUE)),
+                                     column(6,
+                                            checkboxInput("HiddenMarkovIV", label = "Hidden Markov Model", value = TRUE))
+                                   ),
+
+                                   fluidRow(
+                                     column(2,
+                                            checkboxInput("30DFV", label = "30D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("10DFV", label = "10D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("5DFV", label = "5D", value = TRUE)),
+                                     column(2,
+                                            checkboxInput("1DFV", label = "1D", value = TRUE))
+                                   ),
+
+                                   h6(strong("Historical Volatility Data")),
+
+                                   fluidRow(
+                                     column(6,
+                                            dateInput("DateInputHV", label = h6(strong("Date Input")), value = "2016-01-01")),
+                                     column(6,
+                                            dateInput("DateOutPutHV", label =  h6(strong("Date Output ")), value = "2017-12-12"))
+                                   ),
+
+                                   h6(strong("Implied Volatility Data")),
+
+                                   fluidRow(
+                                     column(6,
+                                            dateInput("DateInputIV", label = h6(strong("Date Input")), value = "2016-01-01")),
+                                     column(6,
+                                            dateInput("DateOutPutIV", label =  h6(strong("Date Output ")), value = "2017-12-12"))
+                                   ),
+
+                                   sliderInput("Binss", label = h6(strong("Graphics Scale ")), min = 1, max = 100, value = 70)
+
+                                   )),
+                          column(9,
+                                 fluidRow(
+                                   #mainPanel( plotOutput("line"))
+                                   mainPanel( plotlyOutput("distPlot3"))
+                                   ))
+
+
+
+
+                          ))
+
+
+                                   ),
+             tabPanel("Scenario"),
+             tabPanel("BackOffice"),
+             tabPanel("Config"),
+             tabPanel("Log")
+             )
+  )
