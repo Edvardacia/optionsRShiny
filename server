@@ -1,0 +1,70 @@
+#
+# This is the server logic of a Shiny web application. You can run the
+# application by clicking 'Run App' above.
+#
+
+
+library(shiny)
+library(plotly)
+
+loadData <- function() {
+  # Read all the files into a list
+  files <- list.files("D:\\data2", full.names = TRUE)
+  data <- lapply(files, read.csv, stringsAsFactors = FALSE)
+  # Concatenate all data together into one data.frame
+  data <- do.call(rbind, data)
+  data
+}
+
+shinyServer(function(input, output, session) {
+  #fileData <- reactiveFileReader(1000, NULL, 'D:\\data2\\ex.csv', read.csv)
+
+  #data <- reactivePoll(1000, session, checkFunc = function() {
+  #  if(file.exists("D:\\data2\\ex.csv"))
+  #    file.info("D:\\data2\\ex.csv")$mtime[1]
+  #  else
+  #    ""
+  #},
+  #valueFunc = function() {
+  #  read.csv("D:\\data2\\ex.csv")
+  #})
+  #
+
+  data <- reactiveFileReader(
+  intervalMillis = 1000,
+  session = session,
+  filePath = "D:\\data2\\ex.csv",
+  readFunc = read.csv)
+
+  dataInput <- reactive({
+    S <- data()
+    foo <- data.frame(do.call('rbind', strsplit(as.character(S$X79.22),';',fixed=TRUE)))
+    fooo <- as.vector(foo[, 2])
+    fooo <- as.numeric(fooo)
+    foox <- 1: length(fooo)
+    SZZ <- data.frame(fooo, foox)
+    return(SZZ)
+  })
+
+  output$line <- renderPlot({
+    plot(dataInput(), type = "l")
+  })
+
+  output$distPlot3 <- renderPlotly({
+    plot_ly(dataInput(), x = dataInput()$foox, y = dataInput()$fooo,  type = 'scatter', mode= 'lines+markers')
+  })
+
+  output$distPlot <- renderPlot({
+    x    <- faithful[, 2]
+    Bins <- seq(min(x), max(x), length.out = input$Bins + 1)
+    hist(x, breaks = Bins, col = 'darkgray', border = 'white')
+  })
+
+  output$distPlot2 <- renderPlot({
+    x    <- faithful[, 2]
+    Bins <- seq(min(x), max(x), length.out = input$Bins + 1)
+    hist(x, breaks = Bins, col = 'darkgray', border = 'white')
+  })
+})
+
+
